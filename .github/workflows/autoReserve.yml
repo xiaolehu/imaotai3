@@ -1,50 +1,60 @@
-[6b3m3wh1kh3Ev+EqXiRd9g==]
-hidemobile = 157****7664
-enddate = 9
-userid = pS+dF5VQXRx2dih2FOZjCg==
-province = 广东省
-city = 深圳市
-token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcxNjk0NzQzOSwidXNlcklkIjoxMTU1NzA3NDU5LCJkZXZpY2VJZCI6IjJGMjA3NUQwLUI2NkMtNDI4Ny1BOTAzLURCRkY2MzU4MzQyQSIsImlhdCI6MTcxNDM1NTQzOX0.zjoJi6fOQahr6TzSKRZzUgbYc2fd8pHXqY16ezlS7oE
-lat = 22.560549
-lng = 113.893452
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-[GBvt28JEVcAUgXxoUy1Rtw==]
-hidemobile = 135****5870
-enddate = 9
-userid = wOPjmHsSf5H4I0Db3Gmxkg==
-province = 广东省
-city = 深圳市
-token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcxNjk0NzQ4NywidXNlcklkIjoxMTU1NzA3Nzc2LCJkZXZpY2VJZCI6IjJGMjA3NUQwLUI2NkMtNDI4Ny1BOTAzLURCRkY2MzU4MzQyQSIsImlhdCI6MTcxNDM1NTQ4N30.1yVgW7fI8xb66X7mFii002fENSZDpiv3dRNmDdI-118
-lat = 22.560549
-lng = 113.893452
+name: imaotai-action
 
-[GbnQKfMI3JOF6GFy6UbaeA==]
-hidemobile = 134****6330
-enddate = 9
-userid = BfOGy+Xqn/nT7CltgcyDlw==
-province = 广东省
-city = 深圳市
-token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcxNjk0NzYxNywidXNlcklkIjoxMTYyMjQwNzM0LCJkZXZpY2VJZCI6IjJGMjA3NUQwLUI2NkMtNDI4Ny1BOTAzLURCRkY2MzU4MzQyQSIsImlhdCI6MTcxNDM1NTYxN30.Bk8yZEguuMhJu_efNhmKeD9sTOGLcuTk2HNy5Gz_QRg
-lat = 22.560549
-lng = 113.893452
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - '.github/workflows/**'
+  schedule:
+    - cron: '20 0,1 * * *'
 
-[NI0xEZAtVE60PKSFbVe6vQ==]
-hidemobile = 137****9706
-enddate = 9
-userid = vTBkgg5g19Xtatu3C/f5gQ==
-province = 广东省
-city = 广州市
-token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcxNjk1MjU0MywidXNlcklkIjoxMTU5OTkyNjY1LCJkZXZpY2VJZCI6IjJGMjA3NUQwLUI2NkMtNDI4Ny1BOTAzLURCRkY2MzU4MzQyQSIsImlhdCI6MTcxNDM2MDU0M30.u0K0k5srEcCLzBTU6crPUzTZn_XEZrezVgUEjRsBoww
-lat = 22.948667
-lng = 113.365683
+env:
+  TZ: Asia/Shanghai
 
-[bLI+4LrVxX2vbzO371fu0w==]
-hidemobile = 189****6783
-enddate = 9
-userid = uSISh8z+VKLISTwVi2tMlQ==
-province = 上海市
-city = 上海市
-token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcxNjk3MDU4MiwidXNlcklkIjoxMTU5NDUwMzE3LCJkZXZpY2VJZCI6IjJGMjA3NUQwLUI2NkMtNDI4Ny1BOTAzLURCRkY2MzU4MzQyQSIsImlhdCI6MTcxNDM3ODU4Mn0.raQtEGs4FESe7cm9-SMXq7OwIUPvApzSVn6XZtC8BNo
-lat = 31.161111
-lng = 121.418456
+permissions:
+  contents: read
 
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    #    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      #          pip install pycryptodome requests beautifulsoup4
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: start run
+        env:
+          PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
+          PRIVATE_AES_KEY: ${{ secrets.PRIVATE_AES_KEY }}
+        run: |
+          python main.py
+
+#        pip install flake8 pytest
+#        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#    - name: Lint with flake8
+#      run: |
+#        # stop the build if there are Python syntax errors or undefined names
+#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+#        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+#        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
